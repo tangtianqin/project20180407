@@ -13,7 +13,7 @@ gcloud app logs tail -s default
 python lib/endpoints/endpointscfg.py get_openapi_spec main.EchoApi --hostname project20180407.appspot.com
 gcloud endpoints deploy echov1openapi.json
 gcloud endpoints configs list --service=project20180407.appspot.com
-
+gcloud config set project pi20180411
 
 
 

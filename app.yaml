@@ -16,8 +16,11 @@ skip_files:
 
 handlers:
 # The endpoints handler must be mapped to /_ah/api.
-- url: /_ah/api/.*
-  script: main.api
+#- url: /_ah/api/.*
+#  script: main.api
+
+- url: /.*
+  script: barcode.app
 
 libraries:
 - name: pycrypto
@@ -26,11 +29,15 @@ libraries:
   version: 2.7.11
 - name: lxml
   version: 3.7.3
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: "2.6"  
 
 # [START env_vars]
 env_variables:
   # The following values are to be replaced by information from the output of
   # 'gcloud endpoints services deploy swagger.json' command.
-  ENDPOINTS_SERVICE_NAME: project20180407.appspot.com
-  ENDPOINTS_SERVICE_VERSION: 2018-04-10r1
+  #  ENDPOINTS_SERVICE_NAME: project20180407.appspot.com
+  # ENDPOINTS_SERVICE_VERSION: 2018-04-10r2
  # [END env_vars]
