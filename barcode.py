@@ -15,15 +15,19 @@
 
 import datetime
 import jinja2
-import os
+import sys, os
 import webapp2
+import json
+from datetime import datetime
 
 import logging
 import urllib2
 from urlparse import urlparse
 from google.appengine.api import urlfetch
+from google.appengine.ext import ndb
 from lxml import html
 
+from BarcodeInfoDB import BarcodeInfoDB
 import BarcodeInfo
 
 from google.appengine.api import users
@@ -74,13 +78,13 @@ def AmazonParser(url):
             logging.info(page.content)
             raise ValueError('captha')
         data = BarcodeInfo.BarcodeInfo(
-                NAME=NAME,
-                SALE_PRICE = float(SALE_PRICE) if bool(SALE_PRICE) else -1.0,
-                CATEGORY = CATEGORY,
-                ORIGINAL_PRICE = float(ORIGINAL_PRICE) if bool(ORIGINAL_PRICE) else -1.0,
-                AVAILABILITY = bool(AVAILABILITY),
-                URL = url,
-                BRAND = BRAND
+                Name=NAME,
+                SalePrice = float(SALE_PRICE) if bool(SALE_PRICE) else -1.0,
+                Category = CATEGORY,
+                OriginalPrice = float(ORIGINAL_PRICE) if bool(ORIGINAL_PRICE) else -1.0,
+                Availability = bool(AVAILABILITY),
+                Url = url,
+                Brand = BRAND
                 )
         # logging.info("Data: " + data)
         return data
@@ -137,6 +141,26 @@ class MainPage(webapp2.RequestHandler):
             self.response.content_type='application/json'
             self.response.out.write(data)
         
+    def post(self):
+        try:
+            info = remote.protojson.decode_message(BarcodeInfo.BarcodeInfo, self.request.body)
+            infoDB = BarcodeInfoDB.findByBarcode(info.Barcode)
+            if infoDB:
+                self.response.set_status(200)
+                self.response.out.write("")
+            else: 
+                #logging.info(info.NAME)
+                infoDB = BarcodeInfoDB.from_dict(json.loads(self.request.body))
+                infoDB.CreatedDate = datetime.now()
+                logging.info(infoDB)
+                infoDB.put()
+                self.response.out.write(infoDB.key)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            logging.info(e)
+            self.response.set_status(400)
 app = webapp2.WSGIApplication([
     ('/', MainPage),
 ], debug=True)
