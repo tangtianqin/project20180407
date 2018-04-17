@@ -5,7 +5,7 @@ import datetime
 
 class BarcodeInfoDB(ndb.Expando):
     Name = ndb.StringProperty()
-    SalesPrice = ndb.FloatProperty()
+    SalePrice = ndb.FloatProperty()
     Category = ndb.StringProperty()
     OriginalPrice = ndb.FloatProperty()
     Availability = ndb.BooleanProperty()

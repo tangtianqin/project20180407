@@ -147,7 +147,11 @@ class MainPage(webapp2.RequestHandler):
             infoDB = BarcodeInfoDB.findByBarcode(info.Barcode)
             if infoDB:
                 self.response.set_status(200)
-                self.response.out.write("")
+                if abs(info.SalePrice - infoDB[0].SalePrice) > 0.0001 :
+                    infoDB[0].SalePrice = info.SalePrice
+                    infoDB[0].CreateDate = datetime.now()
+                    infoDB[0].put()
+                self.response.out.write(infoDB[0].key)
             else: 
                 #logging.info(info.NAME)
                 infoDB = BarcodeInfoDB.from_dict(json.loads(self.request.body))
