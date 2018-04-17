@@ -17,3 +17,4 @@ class BarcodeInfo(messages.Message):
     CreatedDate = message_types.DateTimeField(10)
     Longitude = messages.FloatField(11, default=0.0)
     Latitude = messages.FloatField(12, default=0.0)
+

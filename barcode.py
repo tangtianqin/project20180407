@@ -132,12 +132,16 @@ def ReadBarcode(code):
 class MainPage(webapp2.RequestHandler):
     def get(self):
         code = self.request.GET['code']
-        info = ReadBarcode(code) if code and len(code) == 13 else None
+        info = BarcodeInfoDB.findByBarcode(code) if code and len(code) == 13 else None
         if not info:
             self.response.status_message = 'No information about '
             self.response.set_status(404)
         else:
-            data = remote.protojson.encode_message(info)
+            infodata = info[0].to_dict()
+            del infodata["CreatedDate"]
+            m = remote.protojson.decode_message(BarcodeInfo.BarcodeInfo, json.dumps(infodata))
+            m.CreatedDate = info[0].CreatedDate
+            data = remote.protojson.encode_message(m)
             self.response.content_type='application/json'
             self.response.out.write(data)
         
