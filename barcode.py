@@ -134,7 +134,7 @@ def ReadBarcode(code):
 class MainPage(webapp2.RequestHandler):
     def get(self):
         code = self.request.GET['code']
-        info = BarcodeInfoDB.findByBarcode(code) if code and len(code) == 13 else None
+        info = BarcodeInfoDB.findByBarcode(code) if code else None
         if not info:
             self.response.status_message = 'No information about '
             self.response.set_status(404)
