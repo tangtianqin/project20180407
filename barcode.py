@@ -14,6 +14,8 @@
 # limitations under the License.
 
 import datetime
+from pytz import timezone
+import pytz
 import jinja2
 import sys, os
 import webapp2
@@ -138,9 +140,12 @@ class MainPage(webapp2.RequestHandler):
             self.response.set_status(404)
         else:
             infodata = info[0].to_dict()
+            if 'CreateDate' in infodata:
+                del infodata["CreateDate"] 
             del infodata["CreatedDate"]
             m = remote.protojson.decode_message(BarcodeInfo.BarcodeInfo, json.dumps(infodata))
-            m.CreatedDate = info[0].CreatedDate
+            utc = pytz.utc
+            m.CreatedDate = utc.localize(info[0].CreatedDate)
             data = remote.protojson.encode_message(m)
             self.response.content_type='application/json'
             self.response.out.write(data)
@@ -153,7 +158,7 @@ class MainPage(webapp2.RequestHandler):
                 self.response.set_status(200)
                 if abs(info.SalePrice - infoDB[0].SalePrice) > 0.0001 :
                     infoDB[0].SalePrice = info.SalePrice
-                    infoDB[0].CreateDate = datetime.now()
+                    infoDB[0].CreatedDate = datetime.now()
                     infoDB[0].put()
                 self.response.out.write(infoDB[0].key)
             else: 

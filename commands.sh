@@ -20,3 +20,4 @@ gcloud config set project pi20180411
 
 
  export PATH="/usr/local/opt/libxml2/bin:/usr/local/opt/libxslt/bin:$PATH"
+ export PYTHONPATH=./lib
