@@ -14,10 +14,12 @@ python lib/endpoints/endpointscfg.py get_openapi_spec main.EchoApi --hostname pr
 gcloud endpoints deploy echov1openapi.json
 gcloud endpoints configs list --service=project20180407.appspot.com
 gcloud config set project pi20180411
+source ~/Applications/google-cloud-sdk/bin/activate
+PYTHONPATH=. python localtest/runner.py ~/Applications/google-cloud-sdk --test-path=localtest/
 
 
 
 
 
- export PATH="/usr/local/opt/libxml2/bin:/usr/local/opt/libxslt/bin:$PATH"
- export PYTHONPATH=./lib
+export PATH="/usr/local/opt/libxml2/bin:/usr/local/opt/libxslt/bin:$PATH"
+export PYTHONPATH=./lib

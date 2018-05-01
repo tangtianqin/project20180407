@@ -5,6 +5,7 @@ from protorpc import message_types
 
 class BarcodeInfo(messages.Message):
     """A proto Message that contains a simple string field."""
+    id = messages.IntegerField(13)
     Name = messages.StringField(1)
     SalePrice = messages.FloatField(2, default=0.0)
     Category = messages.StringField(3, default="")

@@ -144,6 +144,7 @@ class MainPage(webapp2.RequestHandler):
                 del infodata["CreateDate"] 
             del infodata["CreatedDate"]
             m = remote.protojson.decode_message(BarcodeInfo.BarcodeInfo, json.dumps(infodata))
+            m.id = info[0].key.id()
             utc = pytz.utc
             m.CreatedDate = utc.localize(info[0].CreatedDate)
             data = remote.protojson.encode_message(m)

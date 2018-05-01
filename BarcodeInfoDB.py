@@ -21,7 +21,10 @@ class BarcodeInfoDB(ndb.Expando):
     def from_dict(cls, d):
         excluded = ('key', 'id')
         df = {k:v for k,v in d.iteritems() if k not in excluded}
-        return cls(**df)
+        result = cls(**df)
+        if 'id' in d:
+            result.key = ndb.Key('BarcodeInfoDB', long(d['id']))
+        return result
 
     @classmethod
     def findByBarcode(cls, code):
