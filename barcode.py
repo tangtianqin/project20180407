@@ -175,7 +175,29 @@ class MainPage(webapp2.RequestHandler):
             print(exc_type, fname, exc_tb.tb_lineno)
             logging.info(e)
             self.response.set_status(400)
+
+class BarcodeInfoIDHandler(webapp2.RequestHandler):
+    def get(self, bid):
+        print("In BarcodeInfoIDHandler: %s" % bid)
+        code = BarcodeInfoDB.get_by_id(int(bid))
+        if code: 
+            infodata = code.to_dict()
+            if 'CreateDate' in infodata:
+                del infodata['CreateDate']
+            del infodata['CreatedDate']
+            m = remote.protojson.decode_message(BarcodeInfo.BarcodeInfo, json.dumps(infodata))
+            m.id = code.key.id()
+            utc = pytz.utc
+            m.CreatedDate = utc.localize(code.CreatedDate)
+            data = remote.protojson.encode_message(m)
+            self.response.content_type='application/json'
+            self.response.out.write(data)
+        else:
+            self.response.stastus_message = 'Not Found'
+            self.response.set_status(404)
+
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/barcode_info', MainPage),
+    ('/barcode_info/(\d+)', BarcodeInfoIDHandler),
 ], debug=True)
 

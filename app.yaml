@@ -19,7 +19,7 @@ handlers:
 #- url: /_ah/api/.*
 #  script: main.api
 
-- url: /.*
+- url: /barcode_info.*
   script: barcode.app
 
 libraries:
